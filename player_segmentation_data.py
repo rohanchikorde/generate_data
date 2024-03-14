@@ -1,24 +1,5 @@
 import random
-import csv
-
-# Define the list of features
-features = [
-    "Player Age",
-    "Player Gender",
-    "Player Location",
-    "Player Activity Level",
-    "Player Skill Level",
-    "Player Spending Habits",
-    "Player Engagement Frequency",
-    "Player Game Preferences",
-    "Player Social Interactions",
-    "Player Device Type",
-    "Player Session Duration",
-    "Player In-Game Achievements",
-    "Player Churn Probability",
-    "Player Lifetime Value",
-    "Player Feedback and Ratings"
-]
+import pandas as pd
 
 # Set the number of rows
 num_rows = 10000
@@ -27,44 +8,51 @@ num_rows = 10000
 data = []
 for _ in range(num_rows):
     row = {}
-    for feature in features:
-        if feature == "Player Age":
-            row[feature] = random.randint(18, 60)
-        elif feature == "Player Gender":
-            row[feature] = random.choice(["Male", "Female"])
-        elif feature == "Player Location":
-            row[feature] = random.choice(["USA", "UK", "Canada", "Australia"])
-        elif feature == "Player Activity Level":
-            row[feature] = random.choice(["Low", "Medium", "High"])
-        elif feature == "Player Skill Level":
-            row[feature] = random.choice(["Beginner", "Intermediate", "Advanced"])
-        elif feature == "Player Spending Habits":
-            row[feature] = random.choice(["Low", "Medium", "High"])
-        elif feature == "Player Engagement Frequency":
-            row[feature] = random.choice(["Daily", "Weekly", "Monthly"])
-        elif feature == "Player Game Preferences":
-            row[feature] = random.choice(["Action", "Strategy", "Puzzle"])
-        elif feature == "Player Social Interactions":
-            row[feature] = random.choice(["Low", "Medium", "High"])
-        elif feature == "Player Device Type":
-            row[feature] = random.choice(["Mobile", "PC", "Console"])
-        elif feature == "Player Session Duration":
-            row[feature] = random.randint(10, 120)
-        elif feature == "Player In-Game Achievements":
-            row[feature] = random.randint(0, 100)
-        elif feature == "Player Churn Probability":
-            row[feature] = random.uniform(0, 1)
-        elif feature == "Player Lifetime Value":
-            row[feature] = random.randint(100, 1000)
-        elif feature == "Player Feedback and Ratings":
-            row[feature] = random.randint(1, 5)
+    age = random.randint(18, 60)
+    row["Player Age"] = age
+    row["Player Gender"] = random.choice(["Male", "Female"])
+    if age < 30:
+        row["Player Location"] = random.choice(["USA", "UK"])
+    else:
+        row["Player Location"] = random.choice(["Canada", "Australia"])
+    row["Player Activity Level"] = random.choice(["Low", "Medium", "High"])
+    row["Player Skill Level"] = random.choice(["Beginner", "Intermediate", "Advanced"])
+    row["Player Spending Habits"] = random.choice(["Low", "Medium", "High"])
+    if row["Player Activity Level"] == "High":
+        row["Player Engagement Frequency"] = random.choice(["Daily", "Weekly"])
+    else:
+        row["Player Engagement Frequency"] = random.choice(["Weekly", "Monthly"])
+    if row["Player Skill Level"] == "Advanced":
+        row["Player Game Preferences"] = random.choice(["Action", "Strategy"])
+    else:
+        row["Player Game Preferences"] = random.choice(["Action", "Puzzle"])
+    if row["Player Activity Level"] == "High":
+        row["Player Social Interactions"] = random.choice(["Medium", "High"])
+    else:
+        row["Player Social Interactions"] = random.choice(["Low", "Medium"])
+    if row["Player Gender"] == "Male":
+        row["Player Device Type"] = random.choice(["Mobile", "PC"])
+    else:
+        row["Player Device Type"] = random.choice(["PC", "Console"])
+    if row["Player Location"] == "USA":
+        row["Player Session Duration"] = random.randint(30, 120)
+    elif row["Player Location"] == "UK":
+        row["Player Session Duration"] = random.randint(20, 90)
+    elif row["Player Location"] == "Canada":
+        row["Player Session Duration"] = random.randint(10, 60)
+    else:
+        row["Player Session Duration"] = random.randint(40, 150)
+    row["Player In-Game Achievements"] = random.randint(0, 100)
+    row["Player Churn Probability"] = random.uniform(0, 1)
+    row["Player Lifetime Value"] = random.randint(100, 1000)
+    row["Player Feedback and Ratings"] = random.randint(1, 5)
     data.append(row)
 
-# Save the generated data in a CSV file
+# Create a pandas DataFrame from the generated data
+df = pd.DataFrame(data)
+
+# Save the DataFrame to a CSV file
 filename = "player_segmentation_data.csv"
-with open(filename, "w", newline="") as csvfile:
-    writer = csv.DictWriter(csvfile, fieldnames=features)
-    writer.writeheader()
-    writer.writerows(data)
+df.to_csv(filename, index=False)
 
 print(f"Data saved successfully in {filename}")
